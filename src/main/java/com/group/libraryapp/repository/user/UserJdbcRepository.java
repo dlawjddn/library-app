@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class UserRepository {
+public class UserJdbcRepository {
     private JdbcTemplate jdbcTemplate;
-    public UserRepository(JdbcTemplate jdbcTemplate){
+    public UserJdbcRepository(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
     public void saveUser(String name, Integer age){
