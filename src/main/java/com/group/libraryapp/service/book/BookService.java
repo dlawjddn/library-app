@@ -8,8 +8,11 @@ import com.group.libraryapp.domain.user.loanhistory.UserLoanHistory;
 import com.group.libraryapp.domain.user.loanhistory.UserLoanHistoryRepository;
 import com.group.libraryapp.dto.book.request.BookCreateRequest;
 import com.group.libraryapp.dto.book.request.BookLoanRequest;
+import com.group.libraryapp.dto.book.request.BookReturnRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class BookService {
@@ -34,8 +37,15 @@ public class BookService {
         if(userLoanHistoryRepository.existsByBookNameAndIsReturn(book.getName(), false))
             throw new IllegalArgumentException("진작 대출되어 있는 책 입니다.");
 
-        User user = userRepository.findByName(request.getUserName());
-        if (user==null) throw new IllegalArgumentException();
-        userLoanHistoryRepository.save(new UserLoanHistory(user.getId(), book.getName(), false));
+        User user = userRepository.findByName(request.getUserName())
+                        .orElseThrow(IllegalArgumentException::new);
+        user.loanBook(book.getName());
+    }
+    @Transactional
+    public void returnBook(BookReturnRequest request){
+        User user = userRepository.findByName(request.getUserName())
+                .orElseThrow(IllegalArgumentException::new);
+
+        user.returnBook(request.getBookName());
     }
 }
